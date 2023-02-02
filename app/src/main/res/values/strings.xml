@@ -10,4 +10,6 @@
     <string name="type_your_name">Type your name</string>
     <string name="type_your_password_again">Type your password again</string>
     <string name="sign_up2">Sign Up</string>
+    <string name="new_activity">New Actıvıty</string>
+    <string name="act_v_ty_h_story">Actıvıty Hıstory</string>
 </resources>
