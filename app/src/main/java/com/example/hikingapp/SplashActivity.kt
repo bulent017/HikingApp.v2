@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.TextView
 import com.example.hikingapp.databinding.ActivityAuthBinding
 import com.example.hikingapp.databinding.ActivitySplashBinding
 
@@ -19,8 +20,10 @@ class SplashActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val backgroundImage: ImageView = binding.imageView
+        val header: TextView = binding.textView
         val sideAnimation =AnimationUtils.loadAnimation(this,R.anim.slide)
         backgroundImage.startAnimation(sideAnimation)
+        header.startAnimation(sideAnimation)
 
         Handler().postDelayed({startActivity(Intent(this,AuthActivity::class.java))
                               finish()},4000)
