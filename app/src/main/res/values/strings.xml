@@ -12,4 +12,6 @@
     <string name="sign_up2">Sign Up</string>
     <string name="new_activity">New Actıvıty</string>
     <string name="act_v_ty_h_story">Actıvıty Hıstory</string>
+    <string name="start">Start</string>
+    <string name="end">END</string>
 </resources>

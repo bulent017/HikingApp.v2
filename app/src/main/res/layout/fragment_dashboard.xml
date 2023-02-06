@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="View.FragmentDashboard">
+    tools:context=".View.FragmentDashboard">
 
 
 
@@ -117,7 +117,7 @@
 
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/buttonLogin"
+        android:id="@+id/buttonNewActivity"
         android:layout_width="189dp"
         android:layout_height="51dp"
 

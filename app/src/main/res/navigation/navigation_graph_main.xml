@@ -7,7 +7,32 @@
 
     <fragment
         android:id="@+id/fragmentDashboard"
-        android:name="View.FragmentDashboard"
+        android:name="com.example.hikingapp.View.FragmentDashboard"
         android:label="fragment_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard" >
+        <action
+            android:id="@+id/action_fragmentDashboard_to_fragmentActivity"
+            app:destination="@id/fragmentActivity" />
+        <action
+            android:id="@+id/action_fragmentDashboard_to_fragmentActivityHistory"
+            app:destination="@id/fragmentActivityHistory" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentActivity"
+        android:name="com.example.hikingapp.View.FragmentActivity"
+        android:label="fragment_activity"
+        tools:layout="@layout/fragment_activity" >
+        <action
+            android:id="@+id/action_fragmentActivity_to_fragmentDashboard"
+            app:destination="@id/fragmentDashboard" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentActivityHistory"
+        android:name="com.example.hikingapp.View.FragmentActivityHistory"
+        android:label="fragment_activity_history"
+        tools:layout="@layout/fragment_activity_history" >
+        <action
+            android:id="@+id/action_fragmentActivityHistory_to_fragmentDashboard"
+            app:destination="@id/fragmentDashboard" />
+    </fragment>
 </navigation>

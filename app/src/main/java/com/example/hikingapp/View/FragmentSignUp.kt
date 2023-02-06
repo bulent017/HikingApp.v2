@@ -1,6 +1,6 @@
-package View
+package com.example.hikingapp.View
 
-import Model.User
+import com.example.hikingapp.Model.User
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils

@@ -1,4 +1,4 @@
-package View
+package com.example.hikingapp.View
 
 import android.content.Intent
 import android.os.Bundle
