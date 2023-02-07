@@ -55,5 +55,8 @@ dependencies {
     //osmdroid
     implementation 'org.osmdroid:osmdroid-android:6.1.13'
 
+    //permissions
+    implementation 'pub.devrel:easypermissions:3.0.0'
+
 
 }
