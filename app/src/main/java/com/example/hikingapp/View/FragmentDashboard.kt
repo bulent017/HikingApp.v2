@@ -56,6 +56,7 @@ class FragmentDashboard : Fragment(),EasyPermissions.PermissionCallbacks {
         return binding.root
     }
 
+    /*
     private fun requestPermission(){
         if (TrackingUtility.hasLocationPermission(requireContext())){
             return
@@ -74,7 +75,42 @@ class FragmentDashboard : Fragment(),EasyPermissions.PermissionCallbacks {
                 REQUEST_CODE_LOCATION_PERMISSION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                //Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            )
+        }
+    }
+
+     */
+    private fun requestPermission(){
+        if (TrackingUtility.hasLocationPermission(requireContext())) {
+            return
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (Build.VERSION.SDK_INT== Build.VERSION_CODES.R){
+                EasyPermissions.requestPermissions(this,
+                    "This application cannot be work without Location Permission",
+                    REQUEST_CODE_LOCATION_PERMISSION,
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                )
+            }
+            else{
+                EasyPermissions.requestPermissions(
+                    this,
+                    "You need to accept location permissions to use this app",
+                    REQUEST_CODE_LOCATION_PERMISSION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+
+                    )
+            }
+        } else {
+            EasyPermissions.requestPermissions(
+                this,
+                "This application cannot be work without Location Permission",
+                REQUEST_CODE_LOCATION_PERMISSION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
             )
         }
     }
@@ -90,6 +126,8 @@ class FragmentDashboard : Fragment(),EasyPermissions.PermissionCallbacks {
         }
     }
 
+
+    // deprecated claas yerine başka bir şey kullan daha sonra
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
