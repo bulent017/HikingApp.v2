@@ -1,4 +1,4 @@
-package com.example.hikingapp
+package com.example.hikingapp.View
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +8,7 @@ import android.os.Looper
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.hikingapp.databinding.ActivityAuthBinding
+import com.example.hikingapp.R
 import com.example.hikingapp.databinding.ActivitySplashBinding
 
 //@SuppressLint("CustomSplashScreen") ekle sonra
@@ -23,11 +23,11 @@ class SplashActivity : AppCompatActivity() {
 
         val backgroundImage: ImageView = binding.imageView
         val header: TextView = binding.textView
-        val sideAnimation =AnimationUtils.loadAnimation(this,R.anim.slide)
+        val sideAnimation =AnimationUtils.loadAnimation(this, R.anim.slide)
         backgroundImage.startAnimation(sideAnimation)
         header.startAnimation(sideAnimation)
 
-        Handler(Looper.getMainLooper()).postDelayed({startActivity(Intent(this,AuthActivity::class.java))
+        Handler(Looper.getMainLooper()).postDelayed({startActivity(Intent(this, AuthActivity::class.java))
                               finish()},4000)
     }
 

@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
-import com.example.hikingapp.MainActivity
 import com.example.hikingapp.R
 import com.example.hikingapp.databinding.FragmentLoginBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -37,7 +36,7 @@ class FragmentLogin : Fragment() {
         auth = Firebase.auth
 
         if (auth.currentUser!= null){
-            startActivity(Intent(requireContext(),MainActivity::class.java)) // burada eğer curretn user giriş yaptıysa daha önceden login işlemini tekrar yapmasına gerek  kalmaz
+            startActivity(Intent(requireContext(), MainActivity::class.java)) // burada eğer curretn user giriş yaptıysa daha önceden login işlemini tekrar yapmasına gerek  kalmaz
             onDestroy()
         }
 
@@ -69,7 +68,7 @@ class FragmentLogin : Fragment() {
                         auth.signInWithEmailAndPassword(email,password).addOnCompleteListener(requireActivity()){task ->
                             if (task.isSuccessful){
 
-                                startActivity(Intent(requireContext(),MainActivity::class.java)) // activiteye bağlandık
+                                startActivity(Intent(requireContext(), MainActivity::class.java)) // activiteye bağlandık
                                 onDestroyView()
                                 onDestroy()
                             }

@@ -5,56 +5,66 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.hikingapp.Adapter.RunAdapter
+import com.example.hikingapp.Model.Run
 import com.example.hikingapp.R
+import com.example.hikingapp.databinding.FragmentActivityHistoryBinding
+import com.example.hikingapp.databinding.FragmentDashboardBinding
+import com.example.hikingapp.db.DBoperations
+import org.osmdroid.util.GeoPoint
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [FragmentActivityHistory.newInstance] factory method to
- * create an instance of this fragment.
- */
-class FragmentActivityHistory : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class FragmentActivityHistory : Fragment(),RunAdapter.OnItemClickListener {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentActivityHistoryBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var dbOperations: DBoperations
+    private lateinit var adapter: RunAdapter
+    private lateinit var listOfRunActivitiy : ArrayList<Run>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_activity_history, container, false)
+        _binding = FragmentActivityHistoryBinding.inflate(inflater, container, false)
+
+
+        dbOperations = DBoperations()
+
+
+
+        listOfRunActivitiy = ArrayList()
+
+        adapter = RunAdapter(listOfRunActivitiy,this)
+        binding.apply {
+
+            recyclerview.adapter = adapter
+            recyclerview.setHasFixedSize(true)
+            recyclerview.layoutManager = LinearLayoutManager(requireContext())
+
+        }
+        // read data
+        dbOperations.readData(adapter)
+        listOfRunActivitiy = dbOperations.listOfRunActivity
+
+
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FragmentActivityHistory.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FragmentActivityHistory().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+
+    // bilgileri diğer fragmnet e aktardığımız yer
+    override fun onItemClickButton(
+        id:String,
+        date: String,
+        distance: Double,
+        time: String,
+        route: ArrayList<GeoPoint>
+    ) {
+
     }
+
+
 }

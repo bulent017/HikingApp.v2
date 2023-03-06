@@ -16,93 +16,56 @@ import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
 
-class FragmentDashboard : Fragment(),EasyPermissions.PermissionCallbacks {
+class FragmentDashboard : Fragment(), EasyPermissions.PermissionCallbacks {
+
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        //requestPermission()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        _binding = FragmentDashboardBinding.inflate(inflater,container,false)
-
-        requestPermission()
+    ): View {
+        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
 
         binding.apply {
-
-           buttonNewActivity.setOnClickListener{
+            buttonNewActivity.setOnClickListener {
                 findNavController().navigate(R.id.action_fragmentDashboard_to_fragmentActivity)
+            }
 
-           }
             buttonActivityHistory.setOnClickListener {
                 findNavController().navigate(R.id.action_fragmentDashboard_to_fragmentActivityHistory)
             }
-
-
         }
-
 
         return binding.root
     }
 
-    /*
-    private fun requestPermission(){
-        if (TrackingUtility.hasLocationPermission(requireContext())){
-            return
-        }
-        if (Build.VERSION.SDK_INT< Build.VERSION_CODES.Q){
-            EasyPermissions.requestPermissions(this,
-                "You need to accept location permissions to use this app",
-                REQUEST_CODE_LOCATION_PERMISSION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-        }
-        else{
-            EasyPermissions.requestPermissions(this,
-                "You need to accept location permissions to use this app",
-                REQUEST_CODE_LOCATION_PERMISSION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                //Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            )
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requestPermission()
     }
 
-     */
-    private fun requestPermission(){
+    private fun requestPermission() {
         if (TrackingUtility.hasLocationPermission(requireContext())) {
             return
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (Build.VERSION.SDK_INT== Build.VERSION_CODES.R){
-                EasyPermissions.requestPermissions(this,
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.R) {
+                EasyPermissions.requestPermissions(
+                    this,
                     "This application cannot be work without Location Permission",
                     REQUEST_CODE_LOCATION_PERMISSION,
                     Manifest.permission.ACCESS_BACKGROUND_LOCATION
                 )
-            }
-            else{
+            } else {
                 EasyPermissions.requestPermissions(
                     this,
                     "You need to accept location permissions to use this app",
                     REQUEST_CODE_LOCATION_PERMISSION,
                     Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-
-                    )
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
             }
         } else {
             EasyPermissions.requestPermissions(
@@ -118,22 +81,25 @@ class FragmentDashboard : Fragment(),EasyPermissions.PermissionCallbacks {
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {}
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        if (EasyPermissions.somePermissionPermanentlyDenied(this,perms)){
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
             AppSettingsDialog.Builder(this).build().show()
-        }
-        else{
+        } else {
             requestPermission()
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-    // deprecated claas yerine başka bir şey kullan daha sonra
+    // deprecated class yerine başka bir şey kullan daha sonra
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 }

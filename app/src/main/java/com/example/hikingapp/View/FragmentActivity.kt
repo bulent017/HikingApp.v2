@@ -9,17 +9,24 @@ import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.hikingapp.BuildConfig
+import com.example.hikingapp.Constants.API_KEY
 import com.example.hikingapp.R
+import com.example.hikingapp.Services.WeatherAPIService
 import com.example.hikingapp.databinding.FragmentActivityBinding
+import com.example.hikingapp.db.DBoperations
+import com.google.firebase.database.DatabaseReference
 import kotlinx.coroutines.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -27,7 +34,10 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
 
@@ -44,7 +54,10 @@ class FragmentActivity : Fragment() {
     private lateinit var context1: Context
     private var totalDistance: Double = 0.0
     private var  previousLocation: Location? = null
-
+    var isPlay = false
+    var pauseOffSet :Long = 0
+    private lateinit var  database: DatabaseReference
+    private lateinit var dBoperations: DBoperations
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +75,8 @@ class FragmentActivity : Fragment() {
         _binding = FragmentActivityBinding.inflate(inflater,container,false)
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID)
 
+        dBoperations = DBoperations()
+
         mapSettings()
         polyline.color = Color.RED// Set the color of the path
         polyline.width = 5f // Set the width of the path
@@ -70,28 +85,46 @@ class FragmentActivity : Fragment() {
         context1 = requireActivity().applicationContext
         locationManager = context1.getSystemService(LOCATION_SERVICE) as LocationManager
 
+
+        lifecycleScope.launch {
+            if(ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                currentLocation = getCurrentLocation()
+                if (currentLocation != null){
+                    val startPoint = GeoPoint(currentLocation!!.latitude,currentLocation!!.longitude)
+                    binding.mapView.controller.setCenter(startPoint)
+                    binding.mapView.controller.setZoom(16.0)
+                    //userRoute.add(startPoint)
+                    setWeather(currentLocation!!.latitude, currentLocation!!.longitude)
+
+                }
+                else{
+                    println("Current location null")
+                }
+
+                userMarker = Marker(binding.mapView)
+
+                // starter marker
+                currentLocation?.let {
+                    userMarker.position = GeoPoint(it.latitude, it.longitude)
+                    userMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                    userMarker.icon = getDrawable(context1,R.drawable.baseline_location_on_24)
+                    binding.mapView.overlays.add(userMarker)
+                }
+
+            }
+
+        }
+        /*
         if (ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0f,locationListener)
+            //locationManager.removeUpdates(locationListener)
             currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            //print("permission kısmında")
+           // print("burdayım, lastKonownLocation")
         }
 
-        if (currentLocation != null){
-            val startPoint = GeoPoint(currentLocation!!.latitude,currentLocation!!.longitude)
-            binding.mapView.controller.setCenter(startPoint)
-            binding.mapView.controller.setZoom(16.0)
-            userRoute.add(startPoint)
+         */
 
-        }
 
-        userMarker = Marker(binding.mapView)
-
-        // starter marker
-        currentLocation?.let {
-            userMarker.position = GeoPoint(it.latitude, it.longitude)
-            userMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-            userMarker.icon = getDrawable(context1,R.drawable.baseline_location_on_24)
-            binding.mapView.overlays.add(userMarker)
-        }
         //Update the users location in real time
         binding.mapView.overlays.add(Polyline().apply {
             polyline.setPoints(userRoute)
@@ -103,22 +136,31 @@ class FragmentActivity : Fragment() {
                 if (isChecked) {
 
                     // Start tracking the user's location and updating the map
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0f,locationListener)
-                    startTime = Calendar.getInstance().time
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,5f,locationListener)
+                    startButton()
 
                     // Add the user's route overlay to the map
                     binding.mapView.overlays.add(polyline)
-                    chronometer.start()
+                    //chronometer.start()
 
                 }
                 else {
                     locationManager.removeUpdates(locationListener)
-                    Toast.makeText(context," Marker'ın durması lazım",Toast.LENGTH_SHORT).show()
-                    chronometer.stop()
+                    pauseButton()
+                    //Toast.makeText(context," Marker'ın durması lazım",Toast.LENGTH_SHORT).show()
+                    //println(getCurrentTime())
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        dBoperations.saveData(getDate(),totalDistance,getCurrentTime(),userRoute)
+
+                    }
+
                 }
             }
 
         }
+
+
+
         return binding.root
     }
 
@@ -126,16 +168,19 @@ class FragmentActivity : Fragment() {
         @SuppressLint("UseCompatLoadingForDrawables")
         override fun onLocationChanged(location: Location) {
             currentLocation = location
-            val currentPoint = GeoPoint(location.latitude,location.longitude)
+           // val currentPoint = GeoPoint(location.latitude,location.longitude)
+            setWeather(location.latitude,location.longitude)
+
             userMarker.position = GeoPoint(location.latitude,location.longitude)
             userMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
             userMarker.icon = getDrawable(context1,R.drawable.baseline_location_on_24)
             binding.mapView.overlays.add(userMarker)
 
             // Update the user's route
-            userRoute.add(currentPoint)
-            polyline.setPoints(userRoute)
-            binding.mapView.controller.animateTo(currentPoint)
+            drawRouteLine(location)
+            //userRoute.add(currentPoint)
+            //polyline.setPoints(userRoute)
+            //binding.mapView.controller.animateTo(currentPoint)
 
 
             // Calculate the distance between the new location and the previous location
@@ -153,17 +198,32 @@ class FragmentActivity : Fragment() {
             // Store the new location as the previous location
             previousLocation = location
 
+            totalDistance = totalDistance.roundToLong()/1000.0
+            val strDistance = String.format("%.2f Km", totalDistance)
 
-            val strDistance = String.format("%.2f Km", totalDistance.roundToLong()/1000.0)
-
+            //main thread
             activity?.runOnUiThread {
-                binding.totalDistance.text = strDistance
+                binding.distance.text = strDistance
 
             }
 
 
         }
+
     }
+    private fun drawRouteLine(location: Location) {
+        val currentPoint = GeoPoint(location.latitude, location.longitude)
+
+        // Add the point to the user's route
+        userRoute.add(currentPoint)
+
+        // Set the points of the polyline to the user's route
+        polyline.setPoints(userRoute)
+
+        // Move the map view to the current location
+        binding.mapView.controller.animateTo(currentPoint)
+    }
+
 
 
 
@@ -188,6 +248,30 @@ class FragmentActivity : Fragment() {
                 MapView.getTileSystem().minLatitude,
                 0
             )
+        }
+    }
+
+    private fun setWeather(latitude:Double,longitude:Double){
+        val weatherAPIService = WeatherAPIService()
+        weatherAPIService.getCurrentWeather(latitude, longitude, API_KEY) { weatherResponse ->
+            val temperature = (weatherResponse.main.temp - 273.15).toInt()
+            val main = weatherResponse.weather[0].main
+           // val icon = weatherResponse.weather[3].icon
+            print(temperature)
+            val weather = main + " "+ temperature
+            binding.weatherTextview.text = weather
+            // do something with the weather data here
+        }
+
+
+    }
+
+    private suspend fun getCurrentLocation(): Location? = withContext(Dispatchers.IO) {
+        if (ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            val locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        } else {
+            null
         }
     }
 
@@ -225,4 +309,58 @@ class FragmentActivity : Fragment() {
         locationManager.removeUpdates(locationListener)
         print("OnDestroy")
     }
+
+    fun startButton(){
+        if (!isPlay){
+            binding.chronometer.base = SystemClock.elapsedRealtime() - pauseOffSet
+            binding.chronometer.start()
+            isPlay  =true
+
+        }
+        else{
+            binding.chronometer.base = SystemClock.elapsedRealtime()
+            pauseOffSet = 0
+            binding.chronometer.stop()
+            isPlay = false
+        }
+
+    }
+    fun pauseButton(){
+        if (isPlay){
+            binding.chronometer.stop()
+            pauseOffSet = SystemClock.elapsedRealtime() - binding.chronometer.base
+            isPlay = false
+
+        }
+        else{
+            binding.chronometer.base = SystemClock.elapsedRealtime() - pauseOffSet
+            binding.chronometer.start()
+
+            isPlay = true
+        }
+    }
+    fun getCurrentElapsedTime(): Long {
+        val base = binding.chronometer.base
+        val elapsed = SystemClock.elapsedRealtime() - base
+        return elapsed
+    }
+    fun getCurrentTime(): String {
+        val elapsed = getCurrentElapsedTime()
+        val hours = TimeUnit.MILLISECONDS.toHours(elapsed)
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(elapsed) % 60
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(elapsed) % 60
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getDate():String{
+        val currentDate = LocalDate.now()
+        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        val formattedDate = currentDate.format(formatter)
+        return formattedDate
+
+    }
+
+
+
+
 }

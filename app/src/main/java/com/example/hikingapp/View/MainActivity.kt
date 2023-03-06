@@ -1,14 +1,16 @@
-package com.example.hikingapp
+package com.example.hikingapp.View
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.hikingapp.databinding.ActivityAuthBinding
+import com.example.hikingapp.databinding.ActivityMainBinding
 
-class AuthActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityAuthBinding
+class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAuthBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
 }

@@ -34,5 +34,13 @@
         <action
             android:id="@+id/action_fragmentActivityHistory_to_fragmentDashboard"
             app:destination="@id/fragmentDashboard" />
+        <action
+            android:id="@+id/action_fragmentActivityHistory_to_fragmentActivityHistoryDetail"
+            app:destination="@id/fragmentActivityHistoryDetail" />
     </fragment>
+    <fragment
+        android:id="@+id/fragmentActivityHistoryDetail"
+        android:name="com.example.hikingapp.View.FragmentActivityHistoryDetail"
+        android:label="fragment_activity_history_detail"
+        tools:layout="@layout/fragment_activity_history_detail" />
 </navigation>
