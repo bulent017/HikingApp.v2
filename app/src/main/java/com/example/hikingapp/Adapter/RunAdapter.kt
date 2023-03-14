@@ -13,7 +13,9 @@ class RunAdapter(private var listOfRun:ArrayList<Run>,private val listener:OnIte
 
     interface OnItemClickListener {
         //val id:String,val date:String,val distance: Double,val time:String,val route:ArrayList<GeoPoint>
-        fun onItemClickButton(id:String,date:String,distance: Double,time:String,route:ArrayList<GeoPoint>)
+        fun onItemClickButton(
+            //id:String,
+            date:String,distance: Double,time:String,route:ArrayList<GeoPoint>)
     }
 
 
@@ -22,9 +24,9 @@ class RunAdapter(private var listOfRun:ArrayList<Run>,private val listener:OnIte
             val item = listOfRun[position]
             item.apply {
                 itemBinding.apply {
-                    dateText.text = date
-                    distanceText.text = distance.toString()
-                    timeText.text = time
+                    dateTextView.text = date
+                    distanceTextView.text = distance.toString()
+                    timeTextview.text = time
 
                 }
             }
@@ -34,7 +36,7 @@ class RunAdapter(private var listOfRun:ArrayList<Run>,private val listener:OnIte
         init {
             itemBinding.activityHistoryButton.setOnClickListener {
                 listener.onItemClickButton(
-                    listOfRun[bindingAdapterPosition].id,
+                    //listOfRun[bindingAdapterPosition].id!!,
                     listOfRun[bindingAdapterPosition].date,
                     listOfRun[bindingAdapterPosition].distance,
                     listOfRun[bindingAdapterPosition].time,

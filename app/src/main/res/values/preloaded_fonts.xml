@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/archivo_black</item>
+        <item>@font/baloo_da</item>
+        <item>@font/bowlby_one</item>
+        <item>@font/chango</item>
+        <item>@font/epilogue_black</item>
+        <item>@font/epilogue_bold_italic</item>
+        <item>@font/epilogue_light</item>
+        <item>@font/epilogue_medium</item>
+        <item>@font/epilogue_semibold</item>
+        <item>@font/epilogue_thin</item>
+    </array>
+</resources>

@@ -2,6 +2,7 @@ package com.example.hikingapp.View
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.navigation.fragment.NavHostFragment
 import com.example.hikingapp.databinding.ActivityAuthBinding
 
 class AuthActivity : AppCompatActivity() {
@@ -10,5 +11,8 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+
     }
 }

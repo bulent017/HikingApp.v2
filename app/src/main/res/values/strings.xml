@@ -14,4 +14,11 @@
     <string name="act_v_ty_h_story">Actıvıty Hıstory</string>
     <string name="start">Start</string>
     <string name="end">END</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="history">History</string>
+    <string name="profile">Profile</string>
+    <string name="add_item">Add Item</string>
+    <string name="Leaderboard">Leaderboard</string>
+    <string name="runover">RunOver</string>
+    <string name="details">Details</string>
 </resources>

@@ -13,9 +13,11 @@ import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.fragment.app.Fragment
@@ -26,7 +28,7 @@ import com.example.hikingapp.R
 import com.example.hikingapp.Services.WeatherAPIService
 import com.example.hikingapp.databinding.FragmentActivityBinding
 import com.example.hikingapp.db.DBoperations
-import com.google.firebase.database.DatabaseReference
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -38,7 +40,6 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.math.roundToLong
 
 
 class FragmentActivity : Fragment() {
@@ -48,7 +49,6 @@ class FragmentActivity : Fragment() {
     private var currentLocation: Location? = null
     private val userRoute = ArrayList<GeoPoint>()
     //private var userRouteOverlay = Polyline()
-    private var startTime: Date? = null
     val polyline = Polyline()
     private lateinit  var userMarker:Marker
     private lateinit var context1: Context
@@ -56,11 +56,11 @@ class FragmentActivity : Fragment() {
     private var  previousLocation: Location? = null
     var isPlay = false
     var pauseOffSet :Long = 0
-    private lateinit var  database: DatabaseReference
     private lateinit var dBoperations: DBoperations
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
     }
 
@@ -71,9 +71,19 @@ class FragmentActivity : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
         _binding = FragmentActivityBinding.inflate(inflater,container,false)
+
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID)
+
+
+        binding.activityToolbar.apply {
+            setNavigationIcon(R.drawable.baseline_arrow_back_24)
+            setNavigationOnClickListener { requireActivity().onBackPressed() }
+        }
+
+
+        println("Activity Ekranındayım!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
 
         dBoperations = DBoperations()
 
@@ -114,15 +124,7 @@ class FragmentActivity : Fragment() {
             }
 
         }
-        /*
-        if (ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0f,locationListener)
-            //locationManager.removeUpdates(locationListener)
-            currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-           // print("burdayım, lastKonownLocation")
-        }
 
-         */
 
 
         //Update the users location in real time
@@ -150,8 +152,10 @@ class FragmentActivity : Fragment() {
                     //Toast.makeText(context," Marker'ın durması lazım",Toast.LENGTH_SHORT).show()
                     //println(getCurrentTime())
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        val strDistance = String.format("%.2f", totalDistance / 1000)
+                        totalDistance = strDistance.toDouble()
                         dBoperations.saveData(getDate(),totalDistance,getCurrentTime(),userRoute)
-
+                        print("total dıstance = "+totalDistance)
                     }
 
                 }
@@ -176,41 +180,35 @@ class FragmentActivity : Fragment() {
             userMarker.icon = getDrawable(context1,R.drawable.baseline_location_on_24)
             binding.mapView.overlays.add(userMarker)
 
-            // Update the user's route
+            calculateDistance(location)
             drawRouteLine(location)
-            //userRoute.add(currentPoint)
-            //polyline.setPoints(userRoute)
-            //binding.mapView.controller.animateTo(currentPoint)
-
-
-            // Calculate the distance between the new location and the previous location
-            if (previousLocation != null) {
-                val results = FloatArray(1)
-                Location.distanceBetween(
-                    previousLocation!!.latitude, previousLocation!!.longitude,
-                    location.latitude, location.longitude, results
-                )
-                val distance = results[0]
-
-                // Add the distance to the total distance
-                totalDistance = totalDistance + distance.toDouble()
-            }
-            // Store the new location as the previous location
-            previousLocation = location
-
-            totalDistance = totalDistance.roundToLong()/1000.0
-            val strDistance = String.format("%.2f Km", totalDistance)
-
-            //main thread
-            activity?.runOnUiThread {
-                binding.distance.text = strDistance
-
-            }
 
 
         }
 
     }
+
+
+    private fun calculateDistance(location: Location){
+        if (previousLocation == null){
+            previousLocation = location
+        }
+        else{
+            totalDistance += location.distanceTo(previousLocation!!)
+            previousLocation = location
+        }
+
+        val strDistance = String.format("%.2f", totalDistance / 1000) + " km"
+        //main thread
+        activity?.runOnUiThread {
+            binding.distanceTextView.text = strDistance
+            //print(totalDistance)
+        }
+
+    }
+
+
+
     private fun drawRouteLine(location: Location) {
         val currentPoint = GeoPoint(location.latitude, location.longitude)
 
@@ -254,12 +252,23 @@ class FragmentActivity : Fragment() {
     private fun setWeather(latitude:Double,longitude:Double){
         val weatherAPIService = WeatherAPIService()
         weatherAPIService.getCurrentWeather(latitude, longitude, API_KEY) { weatherResponse ->
-            val temperature = (weatherResponse.main.temp - 273.15).toInt()
+            val degreeOfWeather = (weatherResponse.main.temp - 273.15).toInt()
             val main = weatherResponse.weather[0].main
-           // val icon = weatherResponse.weather[3].icon
-            print(temperature)
-            val weather = main + " "+ temperature
-            binding.weatherTextview.text = weather
+            // Assuming you have an ImageView named "weatherIconImageView"
+            println(weatherResponse.weather[0].icon)
+
+
+            Picasso.get()
+                .load("https://openweathermap.org/img/w/${weatherResponse.weather[0].icon}.png")
+                .into(binding.weatherIcon)
+
+
+
+            // val icon = weatherResponse.weather[3].icon
+            //print(temperature)
+            val degree = degreeOfWeather.toString() + " °C"
+            binding.weatherTextview.text = main
+            binding.degreeTextView.text =  degree
             // do something with the weather data here
         }
 

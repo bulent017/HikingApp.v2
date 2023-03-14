@@ -12,23 +12,26 @@
         android:layout_width="362dp"
         android:layout_height="437dp"
         app:layout_constraintBottom_toBottomOf="parent"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/running" />
+        app:layout_constraintVertical_bias="0.53"
+        app:srcCompat="@drawable/renksiz" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-black"
-        android:text="Running Tracking"
+        android:fontFamily="@font/epilogue_bold_italic"
+        android:textColor="#383838"
+        android:text="RunOver"
         android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.06999999"
-        tools:text="Hiking" />
+         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

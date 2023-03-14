@@ -42,5 +42,12 @@
         android:id="@+id/fragmentActivityHistoryDetail"
         android:name="com.example.hikingapp.View.FragmentActivityHistoryDetail"
         android:label="fragment_activity_history_detail"
-        tools:layout="@layout/fragment_activity_history_detail" />
+        tools:layout="@layout/fragment_activity_history_detail" >
+        <action
+            android:id="@+id/action_fragmentActivityHistoryDetail_to_fragmentActivityHistory"
+            app:destination="@id/fragmentActivityHistory" />
+        <argument
+            android:name="runDataArray"
+            app:argType="string[]" />
+    </fragment>
 </navigation>

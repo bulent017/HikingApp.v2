@@ -1,42 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".View.FragmentSignUp">
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordLayout2"
+        style="@style/LoginTextInputOuterFieldStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+
+        app:boxStrokeColor="@color/customLacivert"
+        app:hintTextColor="@color/customLacivert"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordLayout1"
+        app:layout_constraintVertical_bias="0.060000002"
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordEdittext2_SignUp"
+            style="@style/LoginTextInputInnerFieldStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/type_your_password_again"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
-
         android:layout_height="wrap_content"
-
         android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="30dp"
+
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/epilogue_bold"
         android:text="@string/sign_up2"
+        android:textColor="@color/customLacivert"
         android:textSize="40sp"
-        app:layout_constraintStart_toStartOf="@+id/emailLayout"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.569"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.04000002">
 
     </TextView>
-
-
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailLayout"
         style="@style/LoginTextInputOuterFieldStyle"
-        android:layout_marginTop="80dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        app:boxStrokeColor="@color/blue"
-        app:hintTextColor="@color/blue"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginBottom="12dp"
+        app:boxStrokeColor="@color/customLacivert"
+        app:hintTextColor="@color/customLacivert"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.733"
         app:layout_constraintStart_toStartOf="parent"
-        >
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.17000002">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/email_editText_SignUp"
@@ -46,19 +76,21 @@
             android:hint="@string/type_your_email"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/nameLayout"
         style="@style/LoginTextInputOuterFieldStyle"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        app:boxStrokeColor="@color/blue"
-        app:hintTextColor="@color/blue"
+        android:layout_marginHorizontal="15dp"
+
+        app:boxStrokeColor="@color/customLacivert"
+        app:hintTextColor="@color/customLacivert"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        >
+        app:layout_constraintTop_toBottomOf="@+id/emailLayout"
+        app:layout_constraintVertical_bias="0.01999998">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/name_editText_SignUp"
@@ -68,19 +100,21 @@
             android:hint="@string/type_your_name"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/surnameLayout"
         style="@style/LoginTextInputOuterFieldStyle"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        app:boxStrokeColor="@color/blue"
-        app:hintTextColor="@color/blue"
+        android:layout_marginHorizontal="15dp"
+
+        app:boxStrokeColor="@color/customLacivert"
+        app:hintTextColor="@color/customLacivert"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        >
+        app:layout_constraintTop_toBottomOf="@+id/nameLayout"
+        app:layout_constraintVertical_bias="0.01999998">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/surname_editText_SignUp"
@@ -94,13 +128,17 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordLayout1"
         style="@style/LoginTextInputOuterFieldStyle"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="10dp"
-        app:boxStrokeColor="@color/blue"
-        app:hintTextColor="@color/blue"
-        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginHorizontal="15dp"
+        app:boxStrokeColor="@color/customLacivert"
+        app:hintTextColor="@color/customLacivert"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.733"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/surnameLayout"
+        app:layout_constraintVertical_bias="0.04000002"
         app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -111,40 +149,22 @@
             android:hint="@string/type_your_password"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/passwordLayout2"
-        style="@style/LoginTextInputOuterFieldStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="10dp"
-        app:boxStrokeColor="@color/blue"
-        app:hintTextColor="@color/blue"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:passwordToggleEnabled="true">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/passwordEdittext2_SignUp"
-            style="@style/LoginTextInputInnerFieldStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/type_your_password_again"
-            android:inputType="textPassword" />
-    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonLogin"
-        android:layout_width="120dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginHorizontal="30dp"
-        android:background="@color/blue"
-        android:text="@string/login2"
-        android:textColor="@color/white"
-        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
         android:layout_gravity="end"
-        app:layout_constraintTop_toBottomOf="@+id/passwordLayout"
-        app:layout_constraintVertical_bias="0.377" />
+        android:layout_marginHorizontal="15dp"
+        android:background="@drawable/round_button"
+        android:text="Sign Up"
+        android:textColor="@color/white"
+        android:fontFamily="@font/epilogue_semibold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/passwordLayout2"
+        app:layout_constraintHorizontal_bias="0.549"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordLayout2" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

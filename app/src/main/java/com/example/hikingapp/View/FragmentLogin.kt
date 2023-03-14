@@ -35,10 +35,16 @@ class FragmentLogin : Fragment() {
         auth = Firebase.auth
         auth = Firebase.auth
 
+
         if (auth.currentUser!= null){
             startActivity(Intent(requireContext(), MainActivity::class.java)) // burada eğer curretn user giriş yaptıysa daha önceden login işlemini tekrar yapmasına gerek  kalmaz
+            activity?.finish()
             onDestroy()
         }
+
+
+
+
 
 
 

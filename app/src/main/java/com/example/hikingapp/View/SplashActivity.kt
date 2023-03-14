@@ -24,8 +24,9 @@ class SplashActivity : AppCompatActivity() {
         val backgroundImage: ImageView = binding.imageView
         val header: TextView = binding.textView
         val sideAnimation =AnimationUtils.loadAnimation(this, R.anim.slide)
+        val topAnimation = AnimationUtils.loadAnimation(this,R.anim.top)
         backgroundImage.startAnimation(sideAnimation)
-        header.startAnimation(sideAnimation)
+        header.startAnimation(topAnimation)
 
         Handler(Looper.getMainLooper()).postDelayed({startActivity(Intent(this, AuthActivity::class.java))
                               finish()},4000)

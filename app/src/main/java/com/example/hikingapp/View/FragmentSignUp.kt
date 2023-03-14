@@ -124,7 +124,7 @@ class FragmentSignUp : Fragment() {
 
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         //println(uid)
-        val user = User(binding.emailEditTextSignUp.text.toString(),binding.passwordEdittext1SignUp.text.toString())
+        val user = User(binding.emailEditTextSignUp.text.toString(),binding.passwordEdittext1SignUp.text.toString(),binding.nameEditTextSignUp.text.toString(),binding.surnameEditTextSignUp.text.toString())
         if (uid != null) {
             database.child("user").child(uid).child("User Info").setValue(user)
         }

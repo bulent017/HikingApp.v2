@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/fragmentDashboard"
+        android:title="@string/dashboard"
+        android:icon="@drawable/baseline_dashboard_24"/>
+    <item android:id="@+id/fragmentActivityHistory"
+        android:title="@string/history"
+        android:icon="@drawable/baseline_history_24"/>
+    <item android:id="@+id/LeaderBoard"
+        android:title="@string/Leaderboard"
+        android:icon="@drawable/baseline_leaderboard_24"/>
+
+
+</menu>
