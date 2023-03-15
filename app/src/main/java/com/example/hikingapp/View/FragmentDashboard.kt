@@ -2,6 +2,7 @@ package com.example.hikingapp.View
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -40,7 +41,7 @@ import java.util.concurrent.TimeUnit
     private val binding get() = _binding!!
     private lateinit var runArrayList : ArrayList<Run>
     val uid = FirebaseAuth.getInstance().currentUser?.uid
-
+    private lateinit var progressDialog: ProgressDialog
     var totalDistance = 0.0
     var totalTime:String = ""
     var numberOfActivity = 0
@@ -52,6 +53,8 @@ import java.util.concurrent.TimeUnit
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         runArrayList = ArrayList()
 
+
+
         binding.apply {
 
             activityToolbar.setOnMenuItemClickListener{
@@ -61,7 +64,13 @@ import java.util.concurrent.TimeUnit
                 true
             }
         }
+        progressDialog = ProgressDialog(context)
+        progressDialog.setTitle("Loading...")
+        progressDialog.setMessage("Please wait while we fetch the data")
+        progressDialog.setCancelable(false)
 
+// Show the progress dialog
+        progressDialog.show()
 
         activity?.runOnUiThread {
             readDataFromDashboard()
@@ -173,12 +182,13 @@ import java.util.concurrent.TimeUnit
                             runArrayList.add(run)
                         }
                     }
-
+                    progressDialog.dismiss()
                     updateUI(runArrayList)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     //Toast.makeText(contex,"Veriler gelemedi",Toast.LENGTH_SHORT).show()
+                    progressDialog.dismiss()
                 }
 
             })

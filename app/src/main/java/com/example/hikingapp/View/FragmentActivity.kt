@@ -2,6 +2,7 @@ package com.example.hikingapp.View
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager
@@ -9,15 +10,15 @@ import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.location.LocationProvider
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.fragment.app.Fragment
@@ -57,7 +58,7 @@ class FragmentActivity : Fragment() {
     var isPlay = false
     var pauseOffSet :Long = 0
     private lateinit var dBoperations: DBoperations
-
+    private var isLocationFounded:Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -73,8 +74,11 @@ class FragmentActivity : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentActivityBinding.inflate(inflater,container,false)
 
-        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID)
+        val progressDialog = ProgressDialog(context)
+        progressDialog.setMessage("Location is being found...")
 
+        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID)
+        //binding.progressBar.visibility = View.GONE
 
         binding.activityToolbar.apply {
             setNavigationIcon(R.drawable.baseline_arrow_back_24)
@@ -82,7 +86,7 @@ class FragmentActivity : Fragment() {
         }
 
 
-        println("Activity Ekranındayım!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        //println("Activity Ekranındayım!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
 
         dBoperations = DBoperations()
@@ -105,6 +109,7 @@ class FragmentActivity : Fragment() {
                     binding.mapView.controller.setZoom(16.0)
                     //userRoute.add(startPoint)
                     setWeather(currentLocation!!.latitude, currentLocation!!.longitude)
+                    isLocationFounded = true
 
                 }
                 else{
@@ -136,25 +141,49 @@ class FragmentActivity : Fragment() {
 
             startEndButton.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-
+                    progressDialog.show()
+                    //progressBar.visibility = View.VISIBLE
                     // Start tracking the user's location and updating the map
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,5f,locationListener)
-                    startButton()
+
 
                     // Add the user's route overlay to the map
                     binding.mapView.overlays.add(polyline)
                     //chronometer.start()
 
+                    CoroutineScope(Dispatchers.Main).launch {
+                        try {
+                            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5f, locationListener)
+
+                            while (!isLocationFounded) {
+                                delay(1000)
+                            }
+                            progressDialog.dismiss()
+                            startChronometer()
+                        } catch (e: Exception) {
+                            // Handle exception
+                        }
+                    }
+                    /*
+                    if (!isLocationFounded){
+                        Toast.makeText(context1,"Searching for location. ",Toast.LENGTH_SHORT).show()
+
+                    }
+
+                     */
+
+
                 }
                 else {
                     locationManager.removeUpdates(locationListener)
-                    pauseButton()
+                    stopChronometer()
+                    //binding.progressBar.visibility = View.GONE
                     //Toast.makeText(context," Marker'ın durması lazım",Toast.LENGTH_SHORT).show()
                     //println(getCurrentTime())
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         val strDistance = String.format("%.2f", totalDistance / 1000)
                         totalDistance = strDistance.toDouble()
-                        dBoperations.saveData(getDate(),totalDistance,getCurrentTime(),userRoute)
+                        //dBoperations.saveData(getDate(),totalDistance,getCurrentTime(),userRoute)
                         print("total dıstance = "+totalDistance)
                     }
 
@@ -171,6 +200,9 @@ class FragmentActivity : Fragment() {
     private val locationListener: LocationListener = object: LocationListener {
         @SuppressLint("UseCompatLoadingForDrawables")
         override fun onLocationChanged(location: Location) {
+           // binding.progressBar.visibility = View.GONE
+
+            isLocationFounded = true
             currentLocation = location
            // val currentPoint = GeoPoint(location.latitude,location.longitude)
             setWeather(location.latitude,location.longitude)
@@ -184,6 +216,16 @@ class FragmentActivity : Fragment() {
             drawRouteLine(location)
 
 
+        }
+        override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+            if (status == LocationProvider.AVAILABLE) {
+                isLocationFounded = true
+                if (binding.startEndButton.isChecked) {
+                    startChronometer()
+                }
+            } else {
+                isLocationFounded = false
+            }
         }
 
     }
@@ -319,7 +361,7 @@ class FragmentActivity : Fragment() {
         print("OnDestroy")
     }
 
-    fun startButton(){
+    fun startChronometer(){
         if (!isPlay){
             binding.chronometer.base = SystemClock.elapsedRealtime() - pauseOffSet
             binding.chronometer.start()
@@ -334,7 +376,7 @@ class FragmentActivity : Fragment() {
         }
 
     }
-    fun pauseButton(){
+    fun stopChronometer(){
         if (isPlay){
             binding.chronometer.stop()
             pauseOffSet = SystemClock.elapsedRealtime() - binding.chronometer.base

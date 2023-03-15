@@ -75,6 +75,7 @@ class FragmentLogin : Fragment() {
                             if (task.isSuccessful){
 
                                 startActivity(Intent(requireContext(), MainActivity::class.java)) // activiteye bağlandık
+                                activity?.finish()
                                 onDestroyView()
                                 onDestroy()
                             }

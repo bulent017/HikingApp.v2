@@ -48,7 +48,7 @@ class FragmentActivityHistory : Fragment(),RunAdapter.OnItemClickListener {
         readData()
         adapter = RunAdapter(listOfRunActivitiy,this)
         // read data
-        dbOperations.readData(adapter)
+        //dbOperations.readData(adapter)
         //listOfRunActivitiy = dbOperations.listOfRunActivity
 
 
