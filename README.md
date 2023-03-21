@@ -9,6 +9,7 @@ I developed this application during my internship at BaşarSoft Information Solu
 
 - Android
 - Kotlin
+- Firebase 
 - Retrofit
 - Navigation Component
 - OpenStreetMap Library
