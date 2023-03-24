@@ -11,6 +11,7 @@ I developed this application during my internship at BaşarSoft Information Solu
 - Kotlin
 - Firebase 
 - Retrofit
+- Coroutines 
 - Navigation Component
 - OpenStreetMap Library
 - View Binding
